@@ -1,55 +1,59 @@
+import { Component } from 'react';
+import styles from './Searchbar.module.css';
 import PropTypes from 'prop-types';
-import React, { Component } from 'react';
-import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import { toast } from 'react-toastify';
 
-export default class Searchbar extends Component {
+class Searchbar extends Component {
+  static propTypes = {
+    onSubmit: PropTypes.func.isRequired,
+  };
+
   state = {
-    query: '',
+    search: '',
   };
 
-  handleInputChange = event => {
-    //console.log('event', event.target.value);
-    this.setState({ query: event.target.value });
+  handleChange = ({ target }) => {
+    const { name, value } = target;
+    this.setState({ [name]: value });
   };
 
-  handleSubmitForm = event => {
+  handleSubmit = event => {
     event.preventDefault();
-
-    if (this.state.query.trim() === '') {
-      toast.error('Enter your search query', { autoClose: 1500 });
-      this.clearInput();
+    const { search } = this.state;
+    if (search.trim() === '') {
+      toast.error('Enter your search query');
       return;
     }
-
-    this.props.onSubmit(this.state.query);
-    this.clearInput();
+    const { onSubmit } = this.props;
+    onSubmit({ ...this.state });
+    this.reset();
   };
 
-  clearInput = () => {
+  reset() {
     this.setState({
-      query: '',
+      search: '',
     });
-  };
+  }
 
   render() {
-    
+    const { search } = this.state;
+    const { handleChange, handleSubmit } = this;
     return (
-      <header className="searchbar">
-        <ToastContainer />
-        <form className="form" onSubmit={this.handleSubmitForm}>
-          <button type="submit" className="button">
-            <span className="button-label">Search</span>
+      <header className={styles.Searchbar}>
+        <form className={styles.SearchForm} onSubmit={handleSubmit}>
+          <button type="submit" className={styles.SearchForm__button}>
+            <span className={styles.SearchForm__button__label}>Search</span>
           </button>
 
           <input
-            className="input"
+            className={styles.SearchForm__input}
+            onChange={handleChange}
+            name="search"
+            value={search}
             type="text"
             autoComplete="off"
             autoFocus
             placeholder="Search images and photos"
-            onChange={this.handleInputChange}
-            value={this.state.query}
           />
         </form>
       </header>
@@ -57,6 +61,4 @@ export default class Searchbar extends Component {
   }
 }
 
-Searchbar.propTypes = {
-  onSubmit: PropTypes.func.isRequired,
-};
+export default Searchbar;
