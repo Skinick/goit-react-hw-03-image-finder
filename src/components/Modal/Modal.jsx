@@ -15,6 +15,7 @@ class Modal extends Component {
   componentDidMount() {
     window.addEventListener('keydown', this.handleKeyDown);
   }
+
   componentWillUnmount() {
     window.removeEventListener('keydown', this.handleKeyDown);
   }
@@ -36,6 +37,7 @@ class Modal extends Component {
     const {
       largeImage: { src },
     } = this.props;
+
     return createPortal(
       <div className={styles.Overlay} onClick={handleBackdropClick}>
         <div className={styles.Modal}>
